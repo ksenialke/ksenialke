@@ -1,53 +1,50 @@
-const holes = document.querySelectorAll('.hole');
-const scoreBoard = document.querySelector('.score');
-const moles = document.querySelectorAll('.mole');
-let lastHole;
-let timeUp = false;
-let score = 0;
+const numbers = ['零','一','二','三','四','五','六','七','八','九','十'];
+const bigNumbers = ['亿', '万', '千', '百', '十', '一'];
+const nums = [ 100000000, 10000, 1000, 100, 10, 1];
+const submitButton = document.querySelector('button');
+const writeNumber = document.querySelector('#output');
 
-// random amount of time
-
-function randomTime(min, max) {
-    return Math.round(Math.random() * (max-min) + min);
-}
-
-// random hole
-
-function randomHole(holes) {
-    const idx = Math.floor(Math.random() * holes.length);
-    const hole = holes[idx];
-    if( hole === lastHole ) {
-        return randomHole(holes)
+function convertNumbersRecursive(number) {
+    if(number >= 0 && number <= 10){
+        return numbers[number]
     }
-    lastHole = hole;
-    return hole;
+    let current = number;
+    let out = [];
+    let alreadyStarted = false;
+
+    for( let [i, value] of nums.entries()) {
+        if (current >= value) {
+            alreadyStarted = true;
+            let toSave = Math.floor(current/value);
+            if (!(10 < current && current < 20)) {
+                out.push(convertNumbersRecursive(toSave));
+            }
+            if (value !== 1) {
+                out.push(bigNumbers[i]);
+            }
+            current = current % value;
+        }
+        else if (alreadyStarted) {
+            out.push('零');
+        }
+    }
+    return out.join('')
 }
 
-// showing moles
+function convertNumbers(number)
+{
+    out = convertNumbersRecursive(number)
+    out = out.replace(/零+/, '零');
+    out = out.replace(/(^|[亿|万])二千/, '$1两千');
+    out = out.replace(/(^|亿)二万/, '$1两万');
 
-function peep() {
-    const time = randomTime(600,1000);
-    const hole = randomHole(holes);
-    hole.classList.add('up');
-    setTimeout(() => {
-        hole.classList.remove('up');
-        if(!timeUp) peep();
-    }, time);
+    if(out[out.length-1] === '零') {
+        return out.slice(0, -1);
+    }
+    return out;
 }
 
-function startGame() {
-    scoreBoard.textContent = 0;
-    timeUp = false;
-    score = 0;
-    peep();
-    setTimeout(() => timeUp = true, 10000)
-}
-
-function bonk(e) {
-    if (!e.isTrusted) return; // someone is faking a click
-    score++;
-    this.classList.remove('.up');
-    scoreBoard.textContent = score;
-}
-
-moles.forEach(mole => mole.addEventListener('click', bonk))
+submitButton.addEventListener('click', function () {
+    var toConvert = document.getElementById('arabicnumber').value;
+    writeNumber.textContent = convertNumbers(toConvert);
+});
