@@ -51,5 +51,3 @@ submitButton.addEventListener('click', function () {
     var toConvert = document.getElementById('arabicnumber').value;
     writeNumber.textContent = convertNumbers(toConvert);
 });
-
-console.log(convertNumbers(1000000));
