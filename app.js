@@ -33,14 +33,17 @@ function convertNumbersRecursive(number) {
 
 function convertNumbers(number)
 {
-    out = convertNumbersRecursive(number)
+    out = convertNumbersRecursive(number);
     out = out.replace(/零+/, '零');
     out = out.replace(/(^|[亿|万])二千/, '$1两千');
     out = out.replace(/(^|亿)二万/, '$1两万');
 
-    if(out[out.length-1] === '零') {
-        return out.slice(0, -1);
+    for(i=0; i<out.length; i++){
+        if(out[out.length-1] === '零') {
+            out = out.slice(0, -1);
+        }
     }
+
     return out;
 }
 
@@ -48,3 +51,5 @@ submitButton.addEventListener('click', function () {
     var toConvert = document.getElementById('arabicnumber').value;
     writeNumber.textContent = convertNumbers(toConvert);
 });
+
+console.log(convertNumbers(1000000));
