@@ -31,19 +31,14 @@ function convertNumbersRecursive(number) {
     return out.join('')
 }
 
-function convertNumbers(number)
-{
+function convertNumbers(number) {
     out = convertNumbersRecursive(number);
-    out = out.replace(/零+/, '零');
+    out = out.replace(/零+/g, '零');
     out = out.replace(/(^|[亿|万])二千/, '$1两千');
     out = out.replace(/(^|亿)二万/, '$1两万');
-
-    for(i=0; i<out.length; i++){
-        if(out[out.length-1] === '零') {
-            out = out.slice(0, -1);
-        }
+    if(out[out.length-1] === '零') {
+        out = out.slice(0, -1);
     }
-
     return out;
 }
 
